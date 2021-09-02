@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-processor-2
+  labels:
+    app: order-processor-2
+spec:
+  selector:
+    matchLabels:
+      app: order-processor-2
+  template:
+    metadata:
+      labels:
+        app: order-processor-2
+    spec:
+      containers:
+      - name: order-processor-2
+        image: <acr_name>/pysbdemo:1.4.9
+        env:
+        - name: KEDA_SERVICEBUS_QUEUE_CONNECTIONSTRING
+          valueFrom:
+            secretKeyRef:
+             name: python-secrets
+             key: SERVICEBUS_QUEUE_CONNECTIONSTRING
+        - name: KEDA_SERVICEBUS_QUEUE_NAME
+          valueFrom:
+            secretKeyRef:
+             name: python-secrets
+             key: SERVICEBUS_QUEUE_NAME
+        - name: KEDA_SERVICEBUS_QUEUE_CONNECTIONSTRING_REC
+          valueFrom:
+            secretKeyRef:
+             name: python-secrets
+             key: SERVICEBUS_QUEUE_CONNECTIONSTRINGA
+        - name: KEDA_SERVICEBUS_QUEUE_NAME_REC
+          valueFrom:
+            secretKeyRef:
+             name: python-secrets
+             key: SERVICEBUS_QUEUE_NAMEA
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+          

@@ -1,0 +1,18 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: order-processor2-scaler
+  labels:
+    app: order-processor-2
+    deploymentName: order-processor-2
+spec:
+  scaleTargetRef:
+    name: order-processor-2
+  minReplicaCount: 0 #Change to define how many minimum replicas you want
+  maxReplicaCount: 30
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      queueName: <queue_name>
+      connectionFromEnv: KEDA_SERVICEBUS_QUEUE_CONNECTIONSTRING
+      messageCount: "1"
