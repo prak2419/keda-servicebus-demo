@@ -5,8 +5,6 @@ CONNECTION_STR = os.getenv('KEDA_SERVICEBUS_QUEUE_CONNECTIONSTRING')
 POD_NAME = os.getenv('MY_POD_NAME')
 conn_properties = [s.split("=", 1) for s in CONNECTION_STR.strip().rstrip(";").split(";")]
 QUEUE_NAME = conn_properties[3][1]
-print(QUEUE_NAME)
-print(CONNECTION_STR)
 print(POD_NAME)
 print("nothing")
 CONNECTION_STR_REC = os.getenv('KEDA_SERVICEBUS_QUEUE_CONNECTIONSTRING_REC')
