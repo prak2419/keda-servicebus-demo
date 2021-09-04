@@ -10,6 +10,12 @@
   - [Containerize the code](#containerize-the-code)
   - [Deploy the application](#deploy-the-application)
 
+[Integration with ServiceBus queue through pod identity](#integration-with-servicebus-queue-through-pod-identity)
+  - [Pre-requisites](#pre-requisites-mi)
+  - [Installing KEDA](#installing-keda-mi)
+  - [Containerize the code](#containerize-the-code-mi)
+  - [Deploy the application](#deploy-the-application-mi)
+
 ## Integration with ServiceBus queue through its connection string
 
 The purpose of this POC is to scale the pods based on the number of active messages in a service bus queue. KEDA handles bringing up the required pods to process the messages based on metrics from the ServiceBus queue. Once, the execution is completed it can automatically scale in the pods as well.
@@ -145,7 +151,7 @@ We need two queues for this demo. One queue will be used to receive the message 
 
 The purpose of this POC is to scale the pods based on the number of active messages in a service bus queue. KEDA handles bringing up the required pods to process the messages based on metrics from the ServiceBus queue. Once, the execution is completed it can automatically scale in the pods as well.
 
-### Pre-requisites
+### Pre-requisites (MI)
 The following pre-requisites have to be met,
 - Helm to add and install the KEDA repo.
 - Separate namespace for KEDA to decouple its components from the application namespace.
@@ -153,7 +159,7 @@ The following pre-requisites have to be met,
 - Access to the KEDA auto-scaler managed identity to service bus with "Service Bus Data Owner" permissions and the application scaler managed identity requires at-lease "Azure Service Bus Data Receiver" permissions. Same managed identity can also be used for both the scalers.
 - To implement the container presented in the demo, `azure-servicebus` (v7.3.2) module is required.
 
-### Installing KEDA
+### Installing KEDA (MI)
 
 Deploying KEDA with Helm:
 
@@ -206,7 +212,7 @@ Deploying KEDA with Helm:
 
     ```
 
-### Containerize the code
+### Containerize the code (MI)
 
 1. Use Docker build to build the container image from the repo folder,
 
@@ -232,7 +238,7 @@ Deploying KEDA with Helm:
 
     ```
 
-### Deploy the application
+### Deploy the application (MI)
 We need two queues for this demo. One queue will be used to receive the message for processing and the other will be used to send the queue details with the processing pod name for debugging. This can be used in the retry logic to re-process the messages in case of a failure.
 
 1. This documentation assumes that the pod identity is already implemented in the application namespace.
