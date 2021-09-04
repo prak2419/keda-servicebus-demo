@@ -192,7 +192,7 @@ Deploying KEDA with Helm:
 
     ```
 
-4. Create an identity and identity binding for the KEDA auto-scaler by running the `scaler_binding.yml` to the KEDA namespace after updating the proper values. Update the manifest section highlighted below to match the label applied for the identity from the previous step on the identity binding kind.
+4. Create an identity and identity binding for the KEDA auto-scaler by running the `scaler_binding.yml` to the KEDA namespace after updating the proper values. Update the label selector section to match the label applied for the identity from the previous step.
 
     <pre lang="yaml">
     
