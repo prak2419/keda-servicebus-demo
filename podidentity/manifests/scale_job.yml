@@ -1,0 +1,50 @@
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: azure-servicebus-auth
+spec:
+  podIdentity:
+    provider: azure
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledJob
+metadata:
+ name: test-keda-scaledjob
+ namespace: keda-python-sample
+spec:
+  jobTargetRef:
+    parallelism: 1                            # [max number of desired pods](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#controlling-parallelism)
+    completions: 1                            # [desired number of successfully finished pods](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#controlling-parallelism)
+    activeDeadlineSeconds: 120                #  Specifies the duration in seconds relative to the startTime that the job may be active before the system tries to terminate it; value must be positive integer
+    backoffLimit: 6                           # Specifies the number of retries before marking this job failed. Defaults to 6
+    template:
+      metadata:
+        labels:
+          app: order-processor-mi
+          aadpodidbinding: sb-app             #The label applied for MI assigned to the application pods
+      spec:
+       containers:
+       - name: order-processor-mi
+         image: <acr_name>/pysbmidemo:1.1.4
+         env:
+         - name: QUEUE_NAME
+           value: "<receive_queue>"
+         - name: QUEUE_NAME_REC
+           value: "<send_queue>"
+         - name: MY_POD_NAME
+           valueFrom:
+             fieldRef:
+               fieldPath: metadata.name
+  pollingInterval: 1                         # Optional. Default: 30 seconds
+  successfulJobsHistoryLimit: 2              # Optional. Default: 100. How many completed jobs should be kept.
+  failedJobsHistoryLimit: 50                   # Optional. Default: 100. How many failed jobs should be kept.
+  # envSourceContainerName: {container-name}    # Optional. Default: .spec.JobTargetRef.template.spec.containers[0]
+  maxReplicaCount: 100                        # Optional. Default: 100
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      queueName: "<receive_queue>"
+      namespace: "<service_bus_namespace>"
+      messageCount: "1"
+    authenticationRef:
+      name: azure-servicebus-auth

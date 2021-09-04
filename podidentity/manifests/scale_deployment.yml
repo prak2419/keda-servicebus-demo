@@ -1,0 +1,28 @@
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: azure-servicebus-auth
+spec:
+  podIdentity:
+    provider: azure
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: order-processor-mi
+  labels:
+    app: order-processor-mi
+    deploymentName: order-processor-mi
+spec:
+  scaleTargetRef:
+    name: order-processor-mi
+  minReplicaCount: 0 #Change to define how many minimum replicas you want
+  maxReplicaCount: 30
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      queueName: banned
+      namespace: "<sb_namespace>"
+      messageCount: "1"
+    authenticationRef:
+        name: azure-servicebus-auth

@@ -1,0 +1,16 @@
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentity
+metadata:
+  name: order-scaler-mi
+spec:
+  type: 0 # 0 means User-assigned MSI
+  resourceID: "<MI_resource_id>" # can be same as the MI used for the pod identity bound to the pods
+  clientID: "<client_id_of_MI>" # can be same as the MI used for the pod identity bound to the pods
+---
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentityBinding
+metadata:
+  name: order-scaler-mi-binding
+spec:
+  azureIdentity: order-scaler-mi
+  selector: app-autoscaler

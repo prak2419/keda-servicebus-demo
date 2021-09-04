@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-processor-mi
+  labels:
+    app: order-processor-mi
+spec:
+  selector:
+    matchLabels:
+      app: order-processor-mi
+  template:
+    metadata:
+      labels:
+        app: order-processor-mi
+        aadpodidbinding: sb-app
+    spec:
+      containers:
+      - name: order-processor-mi
+        image: <acr_name>/pysbmidemo:1.1.4
+        env:
+        - name: QUEUE_NAME
+          value: "banned"
+        - name: QUEUE_NAME_REC
+          value: "receiver"
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+          
